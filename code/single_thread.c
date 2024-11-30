@@ -7,7 +7,7 @@
 #define INITIAL_SIZE 1000
 #define MAX_LINE_LENGTH 1024
 #define LOW_STOCK_THRESHOLD 10
-#define MAX_ITEMS 1000000
+#define MAX_ITEMS 10000000
 
 typedef struct {
     int id;
@@ -22,7 +22,8 @@ int itemCount = 0;
 int itemCapacity = INITIAL_SIZE;
 
 // Function prototypes
-void loadData(const char *filename);
+void loadDataFromFiles(); // Function to load data from all four CSV files
+void loadData(const char *filename); 
 void addItem(int id, const char *name, const char *category, int quantity, float price);
 void deleteItem(int id);
 void retrieveItem(int id);
@@ -38,6 +39,19 @@ void printItems();
 void viewItemsByCategory();
 
 // Function to load data from an Excel-like CSV file
+void loadDataFromFiles() {
+  char filenames[20][50];
+
+  // Construct filenames for all 20 data files (assuming a specific naming format)
+  for (int i = 0; i < 20; i++) {
+    sprintf(filenames[i], "warehouse_data_%d.csv", i + 1); 
+  }
+
+  for (int i = 0; i < 20; i++) {
+    loadData(filenames[i]);
+  }
+}
+// Function to load data from an Excel-like CSV file (unchanged)
 void loadData(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (!file) {
@@ -135,10 +149,10 @@ void processBulkUpdates(int increment) {
 
     for (int i = 0; i < itemCount; i++) {
         items[i].quantity += increment;
-        if (i % 10000 == 0) {
+        if (i % 100000 == 0) {
             printf("\nProcessing done for %d items.\n", i);
-            sleep(3);  // Sleep for 3 seconds
-            sleep_time += 3.0; // Add sleep time
+            sleep(2);  // Sleep for 3 seconds
+            sleep_time += 2.0; // Add sleep time
         }
     }
 
@@ -242,30 +256,23 @@ void printItems() {
 void calculateTotalValue() {
     clock_t start_time, end_time;
     double processing_time;
-    double sleep_time = 0.0; // To track total sleep time
 
-    start_time = clock(); // Start timer
+    start_time = clock(); 
 
     float totalValue = 0.0;
     for (int i = 0; i < itemCount; i++) {
         totalValue += items[i].quantity * items[i].price;
-        if (i % 100000 == 0) {
-            printf("\nProcessing done for %d items.\n", i);
-            sleep(2); // Simulate processing delay
 
-            sleep_time += 2.0; // Add sleep time
-        }
 
     }
 
     end_time = clock(); // End timer
     processing_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
 
-    // Include sleep time in total processing time
-    double total_time = processing_time + sleep_time;
+
 
     printf("\nTotal value of all items: %.2f\n", totalValue);
-    printf("Processing time: %.2f seconds\n", total_time);
+    printf("Processing time: %.2f seconds\n", processing_time   );
 }
 
 
@@ -323,8 +330,8 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    printf("Loading data from warehouse_data.csv...\n");
-    loadData("warehouse_data.csv");
+    printf("Loading data from warehouse data files...\n");
+    loadDataFromFiles(); // Use the new loadDataFromFiles function
     printf("Data loaded successfully.\n");
 
 
