@@ -318,7 +318,6 @@ void displayMenu() {
     printf("10. Export Data to CSV\n");
     printf("11. View Items by Category\n");
     printf("12. Calculate Total Value of All Items\n");
-
     printf("13. Exit\n");
     printf("=========================================================\n");
 }
